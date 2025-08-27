@@ -1,0 +1,52 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class ClimateDetectionApp {
+    public static void main(String[] args) {
+        try {
+            // ✅ 1. Define your OpenWeatherMap API key (make sure no \r or \n at the end!)
+            String apiKey = "55e287914a65ddf929509bdaba96eb99";
+
+            // ✅ 2. Define the city you want weather information for
+            String city = "Chennai";
+
+            // ✅ 3. Construct the full URL by inserting the city and API key
+            String urlString = "http://api.openweathermap.org/data/2.5/weather?q="
+                                + city
+                                + "&appid=" + apiKey
+                                + "&units=metric"; // You can change units to imperial if needed
+
+            // ✅ 4. Create a URL object from the string
+            URL url = new URL(urlString);
+
+            // ✅ 5. Open an HTTP connection to the URL
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            // ✅ 6. Create a reader to read the response line by line
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            // ✅ 7. Read the entire response into a StringBuilder
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            // ✅ 8. Close resources
+            in.close();
+            conn.disconnect();
+
+            // ✅ 9. Print the raw JSON response from the API
+            System.out.println("Weather API Response for " + city + ":");
+            System.out.println(response.toString());
+
+        } catch (Exception e) {
+            // 🚨 Catch and print any errors (like wrong API key, connection issue, etc.)
+            System.out.println("Error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
